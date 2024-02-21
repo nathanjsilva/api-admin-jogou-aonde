@@ -42,7 +42,10 @@ class UserAdminController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $user->update(['remember_token' => $token]);
+
         return response()->json(['token' => $token], 200);
     }
+
 
 }
