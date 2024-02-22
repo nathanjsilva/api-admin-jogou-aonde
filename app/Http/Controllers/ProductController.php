@@ -69,7 +69,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->with('images')->get();
 
         return response()->json($products, 200);
     }
