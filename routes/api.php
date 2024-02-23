@@ -12,7 +12,7 @@ Route::prefix('products')->group(function () {
     Route::post('/', 'App\Http\Controllers\ProductController@store');
     Route::get('/', 'App\Http\Controllers\ProductController@getAll');
     Route::put('/{productId}/categories', 'App\Http\Controllers\ProductController@updateType');
-
+    Route::post('/images', 'App\Http\Controllers\ProductImageController@saveImage');
 });
 
 //categories
