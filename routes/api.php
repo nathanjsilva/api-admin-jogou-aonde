@@ -20,4 +20,9 @@ Route::prefix('categories')->group(function () {
     Route::post('/', 'App\Http\Controllers\CategoryController@store');
 });
 
-
+//customer
+Route::prefix('customers')->group(function () {
+    Route::get('/', 'App\Http\Controllers\CustomerController@getAll');
+    Route::get('/{id}', 'App\Http\Controllers\CustomerController@getById');
+    Route::post('/', 'App\Http\Controllers\CustomerController@store');
+});
