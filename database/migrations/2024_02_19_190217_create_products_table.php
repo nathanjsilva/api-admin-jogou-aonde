@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
-            $table->integer('type'); // Adicionando o campo 'type' como um inteiro
+            $table->integer('type');
             $table->timestamps();
         });
     }

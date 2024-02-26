@@ -25,4 +25,13 @@ Route::prefix('customers')->group(function () {
     Route::get('/', 'App\Http\Controllers\CustomerController@getAll');
     Route::get('/{id}', 'App\Http\Controllers\CustomerController@getById');
     Route::post('/', 'App\Http\Controllers\CustomerController@store');
+    Route::post('/login', 'App\Http\Controllers\CustomerController@login');
+});
+
+//cart
+Route::prefix('cart')->group(function () {
+    Route::post('/add', 'App\Http\Controllers\CartController@addItem');
+    Route::post('/remove', 'App\Http\Controllers\CartController@removeItem');
+    Route::post('/update', 'App\Http\Controllers\CartController@updateQuantity');
+    Route::get('/list', 'App\Http\Controllers\CartController@listItems');
 });

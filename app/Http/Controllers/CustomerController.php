@@ -66,4 +66,23 @@ class CustomerController extends Controller
 
         return response()->json($customer, 200);
     }
+
+    public function login(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = Customer::where('email', $validatedData['email'])->first();
+        if (!$user || !Hash::check($validatedData['password'], $user->password)) {
+            return response()->json(['message' => 'Email or password is incorrect'], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $user->update(['remember_token' => $token]);
+
+        return response()->json(['token' => $token], 200);
+    }
 }
