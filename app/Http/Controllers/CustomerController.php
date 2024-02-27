@@ -11,12 +11,6 @@ class CustomerController extends Controller
 {
     use TokenAuthenticatable;
 
-    public function index()
-    {
-        $customers = Customer::all();
-        return response()->json($customers);
-    }
-
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -42,7 +36,7 @@ class CustomerController extends Controller
 
     public function getAll(Request $request)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 1);
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -53,7 +47,7 @@ class CustomerController extends Controller
 
     public function getById(Request $request, $id)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 1);
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }

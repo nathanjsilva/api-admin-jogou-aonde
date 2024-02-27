@@ -17,7 +17,7 @@ class ProductImageController extends Controller
     public function saveImage(Request $request)
     {
         try {
-            $user = $this->authenticateUserByToken($request);
+            $user = $this->authenticateUserByToken($request, 0);
             if (!$user) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }

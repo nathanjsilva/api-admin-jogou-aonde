@@ -29,9 +29,11 @@ Route::prefix('customers')->group(function () {
 });
 
 //cart
-Route::prefix('cart')->group(function () {
-    Route::post('/add', 'App\Http\Controllers\CartController@addItem');
-    Route::post('/remove', 'App\Http\Controllers\CartController@removeItem');
-    Route::post('/update', 'App\Http\Controllers\CartController@updateQuantity');
-    Route::get('/list', 'App\Http\Controllers\CartController@listItems');
+Route::prefix('carts')->group(function () {
+    Route::get('/', 'App\Http\Controllers\CartController@index');
+    Route::get('/', 'App\Http\Controllers\CartController@index');
+    Route::post('/', 'App\Http\Controllers\CartController@store');
+    Route::put('/{id}', 'App\Http\Controllers\CartController@update');
+    Route::delete('/{id}', 'App\Http\Controllers\CartController@destroy');
+    Route::delete('/', 'App\Http\Controllers\CartController@clearCart');
 });

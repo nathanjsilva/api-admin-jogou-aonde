@@ -6,13 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Http\Traits\TokenAuthenticatable;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    use TokenAuthenticatable;
+
     public function index(Request $request)
     {
-        $customer = $request->user();
+        $customer = $this->authenticateUserByToken($request, 1);
 
         if (!$customer) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -30,7 +33,7 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $customer = $request->user();
+        $customer = $this->authenticateUserByToken($request, 1);
 
         if (!$customer) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -66,7 +69,7 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $customer = $request->user();
+        $customer = $this->authenticateUserByToken($request, 1);
 
         if (!$customer) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -88,7 +91,7 @@ class CartController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $customer = $request->user();
+        $customer = $this->authenticateUserByToken($request, 1);
 
         if (!$customer) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -109,8 +112,8 @@ class CartController extends Controller
 
     public function clearCart(Request $request)
     {
-        $customer = $request->user();
-
+        $customer = $this->authenticateUserByToken($request, 1);
+        
         if (!$customer) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }

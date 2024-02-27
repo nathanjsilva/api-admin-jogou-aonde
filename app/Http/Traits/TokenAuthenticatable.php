@@ -3,6 +3,7 @@
 namespace App\Http\Traits;
 
 use App\Models\User;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 trait TokenAuthenticatable
@@ -13,19 +14,20 @@ trait TokenAuthenticatable
      * @param \Illuminate\Http\Request $request
      * @return \App\Models\User|null
      */
-    public function authenticateUserByToken(Request $request)
+    public function authenticateUserByToken(Request $request, $type)
     {
         $token = $request->bearerToken();
         if (!$token) {
             return response()->json(['message' => 'Token not provided'], 401);
         }
 
-        $user = User::where('remember_token', $token)->first();
+        $user = ($type == 0) ? User::where('remember_token', $token)->first() : Customer::where('remember_token', $token)->first();
 
         if (empty($user)) {
             return false;
         }
 
-        return true;
+        return $user;
     }
+
 }

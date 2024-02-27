@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -42,7 +42,7 @@ class ProductController extends Controller
 
     public function updateType(Request $request, $productId)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -63,7 +63,7 @@ class ProductController extends Controller
 
     public function getAll(Request $request)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
