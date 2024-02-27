@@ -31,7 +31,6 @@ Route::prefix('customers')->group(function () {
 //cart
 Route::prefix('carts')->group(function () {
     Route::get('/', 'App\Http\Controllers\CartController@index');
-    Route::get('/', 'App\Http\Controllers\CartController@index');
     Route::post('/', 'App\Http\Controllers\CartController@store');
     Route::put('/{id}', 'App\Http\Controllers\CartController@update');
     Route::delete('/{id}', 'App\Http\Controllers\CartController@destroy');
