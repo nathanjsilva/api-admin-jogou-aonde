@@ -21,7 +21,7 @@ class CartController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $carts = Cart::where('customer_id', $customer->id)->get();
+        $carts = Cart::with('customer', 'product')->where('customer_id', $customer->id)->get();
 
         return response()->json($carts, 200);
     }
@@ -29,8 +29,9 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
         ]);
 
         $customer = $this->authenticateUserByToken($request, 1);
@@ -39,28 +40,30 @@ class CartController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $product = Product::find($request->product_id);
+        foreach ($request->products as $productData) {
+            $product = Product::find($productData['product_id']);
 
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
+
+            $existingCart = Cart::where('customer_id', $customer->id)
+                                ->where('product_id', $product->id)
+                                ->first();
+
+            if ($existingCart) {
+                $existingCart->quantity += $productData['quantity'];
+                $existingCart->save();
+            } else {
+                $cart = new Cart();
+                $cart->customer_id = $customer->id;
+                $cart->product_id = $product->id;
+                $cart->quantity = $productData['quantity'];
+                $cart->save();
+            }
         }
 
-        $existingCart = Cart::where('customer_id', $customer->id)
-                            ->where('product_id', $product->id)
-                            ->first();
-
-        if ($existingCart) {
-            $existingCart->quantity += $request->quantity;
-            $existingCart->save();
-        } else {
-            $cart = new Cart();
-            $cart->customer_id = $customer->id;
-            $cart->product_id = $product->id;
-            $cart->quantity = $request->quantity;
-            $cart->save();
-        }
-
-        return response()->json(['message' => 'Product added to cart successfully'], 200);
+        return response()->json(['message' => 'Products added to cart successfully'], 200);
     }
 
     public function update(Request $request, $id)

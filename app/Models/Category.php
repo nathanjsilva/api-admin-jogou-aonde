@@ -12,14 +12,8 @@ class Category extends Model
 
     protected $fillable = ['name'];
 
-    /**
-     * Método para definir o relacionamento com a tabela de produtos.
-     * Isso permite que você acesse os produtos de uma categoria específica
-     * usando algo como $category->products
-     */
     public function products()
     {
-        // Supondo que 'type' em Product corresponda ao 'id' em Category
         return $this->hasMany(Product::class, 'type', 'id');
     }
 }
