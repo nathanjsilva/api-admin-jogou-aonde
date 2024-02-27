@@ -25,4 +25,15 @@ Route::prefix('customers')->group(function () {
     Route::get('/', 'App\Http\Controllers\CustomerController@getAll');
     Route::get('/{id}', 'App\Http\Controllers\CustomerController@getById');
     Route::post('/', 'App\Http\Controllers\CustomerController@store');
+    Route::post('/login', 'App\Http\Controllers\CustomerController@login');
+});
+
+//cart
+Route::prefix('carts')->group(function () {
+    Route::get('/', 'App\Http\Controllers\CartController@index');
+    Route::get('/', 'App\Http\Controllers\CartController@index');
+    Route::post('/', 'App\Http\Controllers\CartController@store');
+    Route::put('/{id}', 'App\Http\Controllers\CartController@update');
+    Route::delete('/{id}', 'App\Http\Controllers\CartController@destroy');
+    Route::delete('/', 'App\Http\Controllers\CartController@clearCart');
 });

@@ -13,7 +13,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -25,7 +25,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -55,7 +55,7 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
-        $user = $this->authenticateUserByToken($request);
+        $user = $this->authenticateUserByToken($request, 0);
 
         if(!$user){
             return response()->json(['message' => 'Unauthorized'], 401);
