@@ -7,8 +7,7 @@ use App\Http\Traits\TokenAuthenticatable;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
-
-
+use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     use TokenAuthenticatable;
@@ -21,7 +20,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
@@ -29,12 +28,16 @@ class ProductController extends Controller
             'type' => 'required|integer',
         ]);
 
+        if ($validatedData->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validatedData->errors()], 400);
+        }
+
         $product = Product::create([
-            'name' => $validatedData['name'],
-            'description' => $validatedData['description'],
-            'price' => $validatedData['price'],
-            'quantity' => $validatedData['quantity'],
-            'type' => $validatedData['type'],
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'quantity' => $request->quantity,
+            'type' => $request->type,
         ]);
 
         return response()->json(['message' => 'Product created successfully'], 201);
@@ -48,12 +51,16 @@ class ProductController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'type' => 'required|integer',
         ]);
 
+        if ($validatedData->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validatedData->errors()], 400);
+        }
+
         $product = Product::findOrFail($productId);
-        $category = Category::findOrFail($validatedData['type']);
+        $category = Category::findOrFail($request->type);
 
         $product->category()->associate($category);
         $product->save();

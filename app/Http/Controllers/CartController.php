@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Http\Traits\TokenAuthenticatable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
@@ -28,11 +29,15 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validator->errors()], 400);
+        }
 
         $customer = $this->authenticateUserByToken($request, 1);
 
@@ -68,9 +73,13 @@ class CartController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'quantity' => 'required|integer|min:1',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validator->errors()], 400);
+        }
 
         $customer = $this->authenticateUserByToken($request, 1);
 

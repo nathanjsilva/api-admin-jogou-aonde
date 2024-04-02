@@ -36,3 +36,12 @@ Route::prefix('carts')->group(function () {
     Route::delete('/{id}', 'App\Http\Controllers\CartController@destroy');
     Route::delete('/', 'App\Http\Controllers\CartController@clearCart');
 });
+
+//orders
+Route::prefix('orders')->group(function () {
+    Route::get('/purchase', 'App\Http\Controllers\OrderController@purchase');
+    Route::post('/', 'App\Http\Controllers\OrderController@store');
+    Route::put('/{id}', 'App\Http\Controllers\OrderController@update');
+    Route::delete('/{id}', 'App\Http\Controllers\OrderController@destroy');
+    Route::delete('/', 'App\Http\Controllers\OrderController@clearCart');
+});

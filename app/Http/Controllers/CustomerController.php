@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Customer;
 use App\Http\Traits\TokenAuthenticatable;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -13,7 +14,7 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:customers,email',
             'password' => 'required|string|min:6',
@@ -26,9 +27,13 @@ class CustomerController extends Controller
             'cpf_cnpj' => 'required|string|unique:customers,cpf_cnpj',
         ]);
 
+        if ($validatedData->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validatedData->errors()], 400);
+        }
+        
         $customer = new Customer();
-        $customer->fill($validatedData);
-        $customer->password = Hash::make($validatedData['password']);
+        $customer->fill($request->all());
+        $customer->password = Hash::make($request->password);
         $customer->save();
 
         return response()->json(['message' => 'Customer created successfully'], 201);
@@ -63,13 +68,17 @@ class CustomerController extends Controller
 
     public function login(Request $request)
     {
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $user = Customer::where('email', $validatedData['email'])->first();
-        if (!$user || !Hash::check($validatedData['password'], $user->password)) {
+        if ($validatedData->fails()) {
+            return response()->json(['message' => 'Validation errors', 'errors' => $validatedData->errors()], 400);
+        }
+
+        $user = Customer::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Email or password is incorrect'], 401);
         }
 

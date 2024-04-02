@@ -9,6 +9,7 @@ use App\Http\Traits\TokenAuthenticatable;
 use App\Models\ProductImage;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 class ProductImageController extends Controller
 {
@@ -22,18 +23,23 @@ class ProductImageController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
 
-            $validatedData = $request->validate([
+            $validatedData = Validator::make($request->all(), [
                 'image' => 'required|image|max:2048',
                 'product_id' => 'required|integer',
             ]);
+
+            if ($validatedData->fails()) {
+                return response()->json(['message' => 'Validation errors', 'errors' => $validatedData->errors()], 400);
+            }
+            
             $image = $request->file('image');
 
-            $product = Product::find($validatedData['product_id']);
+            $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['message' => 'Product not found'], 404);
             }
 
-            $existingImage = ProductImage::where('product_id', $validatedData['product_id'])->first();
+            $existingImage = ProductImage::where('product_id', $request->product_id)->first();
 
             if ($existingImage && Storage::disk('public')->exists($existingImage->image_path)) {
                 Storage::disk('public')->delete($existingImage->image_path);
@@ -53,7 +59,7 @@ class ProductImageController extends Controller
             }
 
             $productImage = new ProductImage();
-            $productImage->product_id = $validatedData['product_id'];
+            $productImage->product_id = $request->product_id;
             $productImage->image_path = $path;
             $productImage->save();
 
